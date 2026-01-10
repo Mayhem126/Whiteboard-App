@@ -96,14 +96,9 @@ const boardReducer = (state, action) => {
         (el) => !isPointNearElement(el, clientX, clientY)
       )
 
-      const newHistory = state.history.slice(0, state.index + 1)
-      newHistory.push(newElements.map((el) => ({ ...el })))
-
       return {
         ...state,
         elements: newElements,
-        history: newHistory,
-        index: state.index + 1,
       }
     }
     case BOARD_ACTIONS.CHANGE_TEXT: {
@@ -222,7 +217,7 @@ const BoardProvider = ({ children }) => {
 
   const boardMouseUpHandler = () => {
     if (boardState.toolActionType === TOOL_ACTION_TYPES.WRITING) return
-    if (boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING) {
+    if (boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING || boardState.toolActionType === TOOL_ACTION_TYPES.ERASING) {
       dispatchBoardAction({
         type: BOARD_ACTIONS.DRAW_UP,
       })
