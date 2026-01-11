@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useRef, useLayoutEffect } from "react"
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  useState,
+  useCallback,
+} from "react"
 import rough from "roughjs"
 import { TOOL_ACTION_TYPES, TOOL_ITEMS } from "../../constants"
 import boardContext from "../../store/board-context"
@@ -15,17 +22,36 @@ const Board = () => {
     boardMouseMoveHandler,
     boardMouseUpHandler,
     textAreaBlurHandler,
-    undo, 
-    redo
+    undo,
+    redo,
   } = useContext(boardContext)
 
   const { toolboxState } = useContext(toolboxContext)
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+  const [canvasSize, setCanvasSize] = useState({
+    canvasWidth: window.innerWidth,
+    canvasHeight: window.innerHeight,
+  })
+
+  const handleCanvasResize = useCallback(() => {
+    setCanvasSize({
+      canvasWidth: window.innerWidth,
+      canvasHeight: window.innerHeight,
+    })
   }, [])
+
+  useEffect(() => {
+    window.addEventListener("resize", handleCanvasResize)
+    return () => {
+      window.removeEventListener("resize", handleCanvasResize)
+    }
+  }, [handleCanvasResize])
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current
+    canvas.width = canvasSize.canvasWidth
+    canvas.height = canvasSize.canvasHeight
+  }, [canvasSize])
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -65,11 +91,11 @@ const Board = () => {
           context.restore()
           break
         case TOOL_ITEMS.TEXT:
-          context.textBaseline = "top";
-          context.font = `${element.size}px Nanum Pen Script`;
-          context.fillStyle = element.stroke;
-          context.fillText(element.text, element.x1, element.y1);
-          context.restore();
+          context.textBaseline = "top"
+          context.font = `${element.size}px Nanum Pen Script`
+          context.fillStyle = element.stroke
+          context.fillText(element.text, element.x1, element.y1)
+          context.restore()
           break
         default:
           throw new Error("Type not recognised")
@@ -79,7 +105,7 @@ const Board = () => {
     return () => {
       context.clearRect(0, 0, canvas.width, canvas.height)
     }
-  }, [elements])
+  }, [elements, canvasSize])
 
   useEffect(() => {
     const textarea = textAreaRef.current
