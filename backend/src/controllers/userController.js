@@ -2,15 +2,17 @@ const User = require("../models/userModel")
 const bcrypt = require("bcrypt")
 const { registerSchema } = require("../validators/authValidator")
 const { ZodError } = require("zod")
+const { JWT_SECRET } = require("../config/env")
+const jwt = require("jsonwebtoken")
 
 const registerUser = async (req, res) => {
   try {
     const { email, password } = req.body
     registerSchema.parse({ email, password })
 
-    const existingUser = await User.findOne({email})
+    const existingUser = await User.findOne({ email })
     if (existingUser) {
-        return res.status(409).json({message: "Email already registered"})
+      return res.status(409).json({ message: "Email already registered" })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -28,4 +30,26 @@ const registerUser = async (req, res) => {
   }
 }
 
-module.exports = { registerUser }
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body
+    const foundUser = await User.findOne({ email })
+    if (!foundUser) {
+      res.status(401).json({ message: `Email or password is incorrect` })
+    }
+
+    const match = await bcrypt.compare(password, foundUser.password)
+
+    if (match) {
+      const token = jwt.sign({ email, password }, JWT_SECRET)
+      res.setHeader("Authorization", `Bearer ${token}`)
+      res.status(201).json({ message: `Login Successful` })
+    } else {
+      res.status(401).json({ message: `Email or password is incorrect` })
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+}
+
+module.exports = { registerUser, loginUser }
