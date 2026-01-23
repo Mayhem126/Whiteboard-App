@@ -41,7 +41,7 @@ const loginUser = async (req, res) => {
     const match = await bcrypt.compare(password, foundUser.password)
 
     if (match) {
-      const token = jwt.sign({ email, password }, JWT_SECRET)
+      const token = jwt.sign({ email, userId: foundUser._id }, JWT_SECRET)
       res.setHeader("Authorization", `Bearer ${token}`)
       res.status(201).json({ message: `Login Successful` })
     } else {
@@ -52,4 +52,8 @@ const loginUser = async (req, res) => {
   }
 }
 
-module.exports = { registerUser, loginUser }
+const getUserProfile = async (req, res) => {
+  res.json({ message: `Welcome, ${req.user.email}` })
+}
+
+module.exports = { registerUser, loginUser, getUserProfile }
