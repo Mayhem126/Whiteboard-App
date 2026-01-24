@@ -2,7 +2,7 @@ const Canvas = require("../models/canvasModel")
 
 const getUserCanvases = async (req, res) => {
   try {
-    const userId = req.userId
+    const userId = req.user.userId
 
     const canvases = await Canvas.find({
       $or: [{ owner: userId }, { shared: userId }],

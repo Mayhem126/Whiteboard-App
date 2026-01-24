@@ -1,18 +1,25 @@
-import Board from "./Components/Board"
-import Toolbar from "./Components/Toolbar"
-import Toolbox from "./Components/Toolbox"
-import BoardProvider from "./store/BoardProvider"
-import ToolboxProvider from "./store/ToolboxProvider"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Register from "./pages/Register"
+import Login from "./pages/Login"
+import Profile from "./pages/Profile"
+import ProtectedRoute from "./Components/ProtectedRoute"
 
 function App() {
   return (
-    <BoardProvider>
-      <ToolboxProvider>
-        <Toolbar />
-        <Board />
-        <Toolbox />
-      </ToolboxProvider>
-    </BoardProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
