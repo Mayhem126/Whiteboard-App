@@ -7,9 +7,19 @@ const canvasSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    shared: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+    },
+    shared: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     elements: [{ type: mongoose.Schema.Types.Mixed }],
-    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 )
