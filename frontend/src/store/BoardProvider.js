@@ -217,7 +217,10 @@ const BoardProvider = ({ children }) => {
 
   const boardMouseUpHandler = () => {
     if (boardState.toolActionType === TOOL_ACTION_TYPES.WRITING) return
-    if (boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING || boardState.toolActionType === TOOL_ACTION_TYPES.ERASING) {
+    if (
+      boardState.toolActionType === TOOL_ACTION_TYPES.DRAWING ||
+      boardState.toolActionType === TOOL_ACTION_TYPES.ERASING
+    ) {
       dispatchBoardAction({
         type: BOARD_ACTIONS.DRAW_UP,
       })
