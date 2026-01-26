@@ -3,9 +3,12 @@ const Canvas = require("../models/canvasModel")
 const getUserCanvases = async (req, res) => {
   try {
     const userId = req.user.userId
-    const canvases = await Canvas.find({
-      $or: [{ owner: userId }, { shared: userId }],
-    }).sort({ createdAt: -1 })
+    const canvases = await Canvas.find(
+      {
+        $or: [{ owner: userId }, { shared: userId }],
+      },
+      "name createdAt"
+    ).sort({ createdAt: -1 })
 
     res.json(canvases)
   } catch (error) {
@@ -32,9 +35,7 @@ const createCanvas = async (req, res) => {
     })
 
     await newCanvas.save()
-    res
-      .status(201)
-      .json(newCanvas)
+    res.status(201).json(newCanvas)
   } catch (error) {
     res
       .status(500)
@@ -42,4 +43,27 @@ const createCanvas = async (req, res) => {
   }
 }
 
-module.exports = { getUserCanvases, createCanvas }
+const getCanvasById = async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const { id } = req.params
+
+    const canvas = await Canvas.findOne({
+      _id: id,
+      $or: [{ owner: userId }, { shared: userId }],
+    })
+
+    if (!canvas) {
+      return res.status(404).json({ message: "Canvas not found" })
+    }
+
+    res.json(canvas)
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to load canvas",
+      details: error.message,
+    })
+  }
+}
+
+module.exports = { getUserCanvases, createCanvas, getCanvasById }

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
+import Canvas from "./pages/Canvas"
 import ProtectedRoute from "./Components/ProtectedRoute"
 
 function App() {
@@ -15,6 +16,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/canvas/:id"
+          element={
+            <ProtectedRoute>
+              <Canvas />
             </ProtectedRoute>
           }
         />
