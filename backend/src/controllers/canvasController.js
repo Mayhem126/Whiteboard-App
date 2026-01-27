@@ -96,4 +96,9 @@ const updateCanvasElements = async (req, res) => {
   }
 }
 
-module.exports = { getUserCanvases, createCanvas, getCanvasById, updateCanvasElements }
+module.exports = {
+  getUserCanvases,
+  createCanvas,
+  getCanvasById,
+  updateCanvasElements,
+}

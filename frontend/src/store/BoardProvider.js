@@ -76,6 +76,7 @@ const boardReducer = (state, action) => {
 
           return { ...state, elements: newElements }
         }
+
         default:
           throw new Error("Type not recognised")
       }
@@ -138,6 +139,14 @@ const boardReducer = (state, action) => {
         ...state,
         elements: state.history[nextIndex],
         index: nextIndex,
+      }
+    }
+    case BOARD_ACTIONS.SET_ELEMENTS: {
+      return {
+        ...state,
+        elements: action.payload.elements,
+        history: [action.payload.elements],
+        index: 0,
       }
     }
     default:
@@ -254,6 +263,13 @@ const BoardProvider = ({ children }) => {
     })
   }, [])
 
+  const loadElements = (elements) => {
+    dispatchBoardAction({
+      type: BOARD_ACTIONS.SET_ELEMENTS,
+      payload: { elements },
+    })
+  }
+
   const boardContextValue = {
     activeToolItem: boardState.activeToolItem,
     elements: boardState.elements,
@@ -265,6 +281,7 @@ const BoardProvider = ({ children }) => {
     textAreaBlurHandler,
     undo: boardUndoHandler,
     redo: boardRedoHandler,
+    loadElements,
   }
   return (
     <boardContext.Provider value={boardContextValue}>
