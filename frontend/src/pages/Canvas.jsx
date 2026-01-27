@@ -3,39 +3,10 @@ import Toolbar from "../Components/Toolbar"
 import Toolbox from "../Components/Toolbox"
 import BoardProvider from "../store/BoardProvider"
 import ToolboxProvider from "../store/ToolboxProvider"
-import { useEffect, useRef, useContext } from "react"
+import { useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import boardContext from "../store/board-context"
 
 const CanvasContent = ({ id, navigate }) => {
-  const { elements } = useContext(boardContext)
-  const saveTimeoutRef = useRef(null)
-
-  useEffect(() => {
-    if (!elements) return
-
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current)
-    }
-
-    saveTimeoutRef.current = setTimeout(async () => {
-      try {
-        const token = localStorage.getItem("token")
-
-        await fetch(`http://localhost:5000/api/canvas/${id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ elements }),
-        })
-      } catch (err) {
-        console.error("Autosave failed", err)
-      }
-    }, 800)
-  }, [elements, id])
-
   return (
     <>
       <Toolbar />

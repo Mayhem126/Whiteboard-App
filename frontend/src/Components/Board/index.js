@@ -11,6 +11,7 @@ import { TOOL_ACTION_TYPES, TOOL_ITEMS } from "../../constants"
 import boardContext from "../../store/board-context"
 import toolboxContext from "../../store/toolbox-context"
 import classes from "./index.module.css"
+import {updateCanvas} from "../../utils/api"
 
 const Board = () => {
   const canvasRef = useRef()
@@ -126,6 +127,8 @@ const Board = () => {
 
   const handleMouseUp = () => {
     boardMouseUpHandler()
+    const canvasId = window.location.pathname.split('/').pop()
+    updateCanvas(canvasId, elements)
   }
 
   return (

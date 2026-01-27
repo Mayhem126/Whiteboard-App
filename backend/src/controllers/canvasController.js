@@ -78,7 +78,7 @@ const updateCanvasElements = async (req, res) => {
 
     const canvas = await Canvas.findOne({
       _id: id,
-      owner: userId,
+      $or: [{ owner: userId }, { shared: userId }],
     })
 
     if (!canvas) {
@@ -86,9 +86,8 @@ const updateCanvasElements = async (req, res) => {
     }
 
     canvas.elements = elements
-    await canvas.save()
-
-    res.json({ message: "Canvas updated successfully" })
+    const updatedCanvas = await canvas.save()
+    res.status(200).json(updatedCanvas)
   } catch (error) {
     res.status(500).json({
       error: "Failed to update canvas",
