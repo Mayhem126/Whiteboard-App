@@ -13,6 +13,8 @@ const Dashboard = () => {
   const [shareEmail, setShareEmail] = useState("")
   const [shareError, setShareError] = useState(null)
   const [shareSuccess, setShareSuccess] = useState(null)
+  const [deleteCanvasId, setDeleteCanvasId] = useState(null)
+  const [deleteError, setDeleteError] = useState(null)
 
   const navigate = useNavigate()
   const token = localStorage.getItem("token")
@@ -108,6 +110,33 @@ const Dashboard = () => {
     }
   }
 
+  const handleDelete = async (canvasId) => {
+    setDeleteError(null)
+
+    try {
+      const res = await fetch(`${API_BASE}/canvas/${canvasId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setDeleteError(data.message || "Failed to delete canvas")
+        return
+      }
+
+      // remove from UI immediately
+      setCanvases((prev) => prev.filter((canvas) => canvas._id !== canvasId))
+
+      setDeleteCanvasId(null)
+    } catch (err) {
+      setDeleteError("Something went wrong")
+    }
+  }
+
   if (loading) return <p className="p-6">Loading...</p>
 
   return (
@@ -152,14 +181,34 @@ const Dashboard = () => {
                 </div>
 
                 <button
-                  onClick={() =>
+                  onClick={() => {
                     setShareCanvasId(
                       shareCanvasId === canvas._id ? null : canvas._id
                     )
-                  }
+                    setShareEmail("")
+                    setShareError(null)
+                    setShareSuccess(null)
+                    setDeleteError(null)
+                    setDeleteCanvasId(null)
+                  }}
                   className="text-sm border px-3 py-1"
                 >
                   Share
+                </button>
+                <button
+                  onClick={() => {
+                    setDeleteCanvasId(
+                      deleteCanvasId === canvas._id ? null : canvas._id
+                    )
+                    setDeleteError(null)
+                    setShareError(null)
+                    setShareSuccess(null)
+                    setShareEmail("")
+                    setShareCanvasId(null)
+                  }}
+                  className="text-sm border px-3 py-1 text-red-600"
+                >
+                  Delete
                 </button>
               </div>
               {shareCanvasId === canvas._id && (
@@ -198,6 +247,36 @@ const Dashboard = () => {
                   )}
                   {shareSuccess && (
                     <p className="text-green-600 text-sm">{shareSuccess}</p>
+                  )}
+                </div>
+              )}
+              {deleteCanvasId === canvas._id && (
+                <div className="mt-3 space-y-2">
+                  <p className="text-sm text-red-600">
+                    Are you sure you want to delete this canvas?
+                  </p>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleDelete(canvas._id)}
+                      className="bg-red-600 text-white px-3 py-1"
+                    >
+                      Delete
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setDeleteCanvasId(null)
+                        setDeleteError(null)
+                      }}
+                      className="border px-3 py-1"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+
+                  {deleteError && (
+                    <p className="text-red-500 text-sm">{deleteError}</p>
                   )}
                 </div>
               )}

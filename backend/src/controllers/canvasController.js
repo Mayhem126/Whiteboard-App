@@ -124,7 +124,7 @@ const shareCanvasWithUser = async (req, res) => {
     })
 
     if (!canvas) {
-      return res.status(403).json({ message: "Canvas not found" })
+      return res.status(403).json({ message: "Not authorized to share canvas" })
     }
 
     if (canvas.shared.includes(userToShare._id)) {
@@ -147,10 +147,40 @@ const shareCanvasWithUser = async (req, res) => {
   }
 }
 
+const deleteCanvas = async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const { id } = req.params
+
+    const canvas = await Canvas.findOne({
+      _id: id,
+      owner: userId,
+    })
+
+    if (!canvas) {
+      return res.status(403).json({
+        message: "Not authorized to delete this canvas",
+      })
+    }
+
+    await Canvas.findByIdAndDelete(id)
+
+    res.status(200).json({
+      message: "Canvas deleted successfully",
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to delete canvas",
+      details: error.message,
+    })
+  }
+}
+
 module.exports = {
   getUserCanvases,
   createCanvas,
   getCanvasById,
   updateCanvasElements,
   shareCanvasWithUser,
+  deleteCanvas,
 }
