@@ -1,4 +1,5 @@
 const Canvas = require("../models/canvasModel")
+const User = require("../models/userModel")
 
 const getUserCanvases = async (req, res) => {
   try {
@@ -96,9 +97,60 @@ const updateCanvasElements = async (req, res) => {
   }
 }
 
+const shareCanvasWithUser = async (req, res) => {
+  try {
+    const ownerId = req.user.userId
+    const { id } = req.params
+    const { email } = req.body
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" })
+    }
+
+    const userToShare = await User.findOne({ email })
+    if (!userToShare) {
+      return res.status(404).json({ message: "User not found" })
+    }
+
+    if (userToShare._id.toString() === ownerId) {
+      return res.status(400).json({
+        message: "Canvas cannot be shared with owner",
+      })
+    }
+
+    const canvas = await Canvas.findOne({
+      _id: id,
+      owner: ownerId,
+    })
+
+    if (!canvas) {
+      return res.status(403).json({ message: "Canvas not found" })
+    }
+
+    if (canvas.shared.includes(userToShare._id)) {
+      return res
+        .status(400)
+        .json({ message: "Canvas already shared with this user" })
+    }
+
+    canvas.shared.push(userToShare._id)
+    await canvas.save()
+
+    res.status(200).json({
+      message: "Canvas shared successfully",
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to share canvas",
+      details: error.message,
+    })
+  }
+}
+
 module.exports = {
   getUserCanvases,
   createCanvas,
   getCanvasById,
   updateCanvasElements,
+  shareCanvasWithUser,
 }

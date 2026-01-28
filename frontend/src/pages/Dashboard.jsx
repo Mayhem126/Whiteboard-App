@@ -9,6 +9,10 @@ const Dashboard = () => {
   const [name, setName] = useState("")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [shareCanvasId, setShareCanvasId] = useState(null)
+  const [shareEmail, setShareEmail] = useState("")
+  const [shareError, setShareError] = useState(null)
+  const [shareSuccess, setShareSuccess] = useState(null)
 
   const navigate = useNavigate()
   const token = localStorage.getItem("token")
@@ -70,6 +74,40 @@ const Dashboard = () => {
     navigate("/login")
   }
 
+  const handleShare = async (canvasId) => {
+    setShareError(null)
+    setShareSuccess(null)
+
+    if (!shareEmail.trim()) {
+      setShareError("Email is required")
+      return
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/canvas/${canvasId}/share`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email: shareEmail }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setShareError(data.message || "Failed to share canvas")
+        return
+      }
+
+      setShareSuccess("Canvas shared successfully")
+      setShareEmail("")
+      setShareCanvasId(null)
+    } catch (err) {
+      setShareError("Something went wrong")
+    }
+  }
+
   if (loading) return <p className="p-6">Loading...</p>
 
   return (
@@ -101,15 +139,68 @@ const Dashboard = () => {
       ) : (
         <ul className="space-y-2">
           {canvases.map((canvas) => (
-            <li
-              key={canvas._id}
-              className="border p-4 cursor-pointer hover:bg-gray-50"
-              onClick={() => navigate(`/canvas/${canvas._id}`)}
-            >
-              <p className="font-medium">{canvas.name}</p>
-              <p className="text-sm text-gray-500">
-                Created {new Date(canvas.createdAt).toLocaleDateString()}
-              </p>
+            <li key={canvas._id} className="border p-4 hover:bg-gray-50">
+              <div className="flex justify-between items-center gap-4">
+                <div
+                  className="cursor-pointer flex-1"
+                  onClick={() => navigate(`/canvas/${canvas._id}`)}
+                >
+                  <p className="font-medium">{canvas.name}</p>
+                  <p className="text-sm text-gray-500">
+                    Created {new Date(canvas.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() =>
+                    setShareCanvasId(
+                      shareCanvasId === canvas._id ? null : canvas._id
+                    )
+                  }
+                  className="text-sm border px-3 py-1"
+                >
+                  Share
+                </button>
+              </div>
+              {shareCanvasId === canvas._id && (
+                <div className="mt-3 space-y-2">
+                  <input
+                    type="email"
+                    placeholder="User email"
+                    className="border p-2 w-full"
+                    value={shareEmail}
+                    onChange={(e) => setShareEmail(e.target.value)}
+                  />
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleShare(canvas._id)}
+                      className="bg-black text-white px-3 py-1"
+                    >
+                      Share
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShareCanvasId(null)
+                        setShareEmail("")
+                        setShareError(null)
+                        setShareSuccess(null)
+                      }}
+                      className="border px-3 py-1"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+
+                  {shareError && (
+                    <p className="text-red-500 text-sm">{shareError}</p>
+                  )}
+                  {shareSuccess && (
+                    <p className="text-green-600 text-sm">{shareSuccess}</p>
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ul>
