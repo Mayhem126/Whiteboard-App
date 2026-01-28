@@ -7,9 +7,26 @@ import { useEffect, useContext } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import boardContext from "../store/board-context"
 import { rehydrateElements } from "../utils/rehydrateElements"
+import { initSocket, getSocket } from "../utils/socket"
 
 const CanvasContent = ({ id, navigate }) => {
   const { loadElements } = useContext(boardContext)
+
+  useEffect(() => {
+    const socket = getSocket()
+    if (!socket) return
+
+    const handleRemoteUpdate = ({ elements }) => {
+      loadElements(elements)
+    }
+
+    socket.on("canvas:update", handleRemoteUpdate)
+
+    return () => {
+      socket.off("canvas:update", handleRemoteUpdate)
+    }
+  }, [loadElements])
+
   useEffect(() => {
     const loadFromDb = async () => {
       try {
@@ -75,6 +92,18 @@ const Canvas = () => {
 
     loadCanvas()
   }, [id, navigate])
+
+  useEffect(() => {
+    const socket = initSocket()
+
+    socket.connect()
+
+    socket.emit("join-canvas", { canvasId: id })
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [id])
 
   return (
     <BoardProvider>

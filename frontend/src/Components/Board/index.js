@@ -135,8 +135,6 @@ const Board = () => {
 
   const handleMouseUp = () => {
     boardMouseUpHandler()
-    const canvasId = window.location.pathname.split("/").pop()
-    updateCanvas(canvasId, elements)
   }
 
   return (

@@ -7,6 +7,20 @@ import {
   isPointNearElement,
 } from "../Components/utils/element"
 import getStroke from "perfect-freehand"
+import { updateCanvas } from "../utils/api"
+import { getSocket } from "../utils/socket"
+
+const syncCanvas = (elements) => {
+  const canvasId = window.location.pathname.split("/").pop()
+  if (!canvasId) return
+
+  updateCanvas(canvasId, elements)
+
+  const socket = getSocket()
+  if (socket?.connected) {
+    socket.emit("canvas:update", { canvasId, elements })
+  }
+}
 
 const boardReducer = (state, action) => {
   switch (action.type) {
@@ -82,9 +96,12 @@ const boardReducer = (state, action) => {
       }
     }
     case BOARD_ACTIONS.DRAW_UP: {
-      const elementsCopy = state.elements.map((el) => ({ ...el }))
+      const elementsCopy = state.elements.map(el => ({ ...el }))
       const newHistory = state.history.slice(0, state.index + 1)
       newHistory.push(elementsCopy)
+    
+      syncCanvas(elementsCopy)
+    
       return {
         ...state,
         history: newHistory,
@@ -126,18 +143,26 @@ const boardReducer = (state, action) => {
     case BOARD_ACTIONS.UNDO: {
       const prevIndex = state.index - 1
       if (prevIndex < 0) return state
+    
+      const elements = state.history[prevIndex]
+      syncCanvas(elements)
+    
       return {
         ...state,
-        elements: state.history[prevIndex],
+        elements,
         index: prevIndex,
       }
     }
     case BOARD_ACTIONS.REDO: {
       const nextIndex = state.index + 1
       if (nextIndex >= state.history.length) return state
+    
+      const elements = state.history[nextIndex]
+      syncCanvas(elements)
+    
       return {
         ...state,
-        elements: state.history[nextIndex],
+        elements,
         index: nextIndex,
       }
     }

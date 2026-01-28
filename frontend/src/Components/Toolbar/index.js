@@ -9,15 +9,16 @@ import {
   FaEraser,
   FaFont,
   FaUndoAlt,
-  FaRedoAlt, 
-  FaDownload
+  FaRedoAlt,
+  FaDownload,
 } from "react-icons/fa"
 import { LuRectangleHorizontal } from "react-icons/lu"
 import boardContext from "../../store/board-context"
 import { TOOL_ITEMS } from "../../constants"
 
 const Toolbar = () => {
-  const { activeToolItem, changeToolHandler, undo, redo } = useContext(boardContext)
+  const { activeToolItem, changeToolHandler, undo, redo, elements } =
+    useContext(boardContext)
 
   const handleDownloadClick = () => {
     const canvas = document.getElementById("canvas")
@@ -87,16 +88,10 @@ const Toolbar = () => {
       >
         <FaFont />
       </div>
-      <div
-        className={classNames(classes.toolItem)}
-        onClick={undo}
-      >
+      <div className={classNames(classes.toolItem)} onClick={undo}>
         <FaUndoAlt />
       </div>
-      <div
-        className={classNames(classes.toolItem)}
-        onClick={redo}
-      >
+      <div className={classNames(classes.toolItem)} onClick={redo}>
         <FaRedoAlt />
       </div>
       <div

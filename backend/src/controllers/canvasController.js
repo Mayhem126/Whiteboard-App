@@ -77,17 +77,24 @@ const updateCanvasElements = async (req, res) => {
       return res.status(400).json({ message: "Invalid elements data" })
     }
 
-    const canvas = await Canvas.findOne({
-      _id: id,
-      $or: [{ owner: userId }, { shared: userId }],
-    })
-
-    if (!canvas) {
+    const updatedCanvas = await Canvas.findOneAndUpdate(
+      {
+        _id: id,
+        $or: [{ owner: userId }, { shared: userId }],
+      },
+      {
+        $set: { elements },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
+    
+    if (!updatedCanvas) {
       return res.status(404).json({ message: "Canvas not found" })
     }
-
-    canvas.elements = elements
-    const updatedCanvas = await canvas.save()
+    
     res.status(200).json(updatedCanvas)
   } catch (error) {
     res.status(500).json({
