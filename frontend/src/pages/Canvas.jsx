@@ -26,7 +26,7 @@ const CanvasContent = ({ id, navigate }) => {
       socket.off("canvas:update", handleRemoteUpdate)
     }
   }, [loadElements])
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const loadFromDb = async () => {
       try {

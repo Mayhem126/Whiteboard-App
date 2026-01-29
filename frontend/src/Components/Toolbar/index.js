@@ -17,7 +17,7 @@ import boardContext from "../../store/board-context"
 import { TOOL_ITEMS } from "../../constants"
 
 const Toolbar = () => {
-  const { activeToolItem, changeToolHandler, undo, redo, elements } =
+  const { activeToolItem, changeToolHandler, undo, redo } =
     useContext(boardContext)
 
   const handleDownloadClick = () => {

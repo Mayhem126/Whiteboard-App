@@ -11,7 +11,6 @@ import { TOOL_ACTION_TYPES, TOOL_ITEMS } from "../../constants"
 import boardContext from "../../store/board-context"
 import toolboxContext from "../../store/toolbox-context"
 import classes from "./index.module.css"
-import { updateCanvas } from "../../utils/api"
 import getStroke from "perfect-freehand"
 import { getSvgPathFromStroke } from "../utils/element"
 
