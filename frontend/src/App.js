@@ -4,6 +4,7 @@ import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import Canvas from "./pages/Canvas"
 import ProtectedRoute from "./Components/ProtectedRoute"
+import GuestCanvas from "./pages/GuestCanvas"
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<GuestCanvas />} />
         <Route
           path="/dashboard"
           element={
