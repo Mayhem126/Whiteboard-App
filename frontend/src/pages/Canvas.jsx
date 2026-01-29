@@ -32,7 +32,7 @@ const CanvasContent = ({ id, navigate }) => {
       try {
         const token = localStorage.getItem("token")
 
-        const res = await fetch(`http://localhost:5000/api/canvas/${id}`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/canvas/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -73,7 +73,7 @@ const Canvas = () => {
       try {
         const token = localStorage.getItem("token")
 
-        const res = await fetch(`http://localhost:5000/api/canvas/${id}`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/canvas/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
