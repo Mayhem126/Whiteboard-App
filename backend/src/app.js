@@ -7,7 +7,12 @@ const canvasRoutes = require("./routes/canvasRoute")
 const app = express()
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      process.env.FRONTEND_URL,
+    ],
+    credentials: true,
     exposedHeaders: ["Authorization"],
   })
 )
