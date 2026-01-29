@@ -142,7 +142,6 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mx-auto max-w-4xl space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold text-gray-900">
             My Canvases
@@ -155,7 +154,6 @@ const Dashboard = () => {
           </button>
         </div>
   
-        {/* Create Canvas */}
         <form
           onSubmit={handleCreate}
           className="flex gap-2 rounded-xl bg-white p-4 shadow-sm"
@@ -173,7 +171,6 @@ const Dashboard = () => {
   
         {error && <p className="text-sm text-red-500">{error}</p>}
   
-        {/* Canvas List */}
         {canvases.length === 0 ? (
           <p className="text-gray-500">No canvases yet. Create one above.</p>
         ) : (
@@ -228,7 +225,6 @@ const Dashboard = () => {
                   </button>
                 </div>
   
-                {/* Share UI */}
                 {shareCanvasId === canvas._id && (
                   <div className="mt-4 space-y-2">
                     <input
@@ -269,7 +265,6 @@ const Dashboard = () => {
                   </div>
                 )}
   
-                {/* Delete UI */}
                 {deleteCanvasId === canvas._id && (
                   <div className="mt-4 space-y-2">
                     <p className="text-sm text-red-600">
