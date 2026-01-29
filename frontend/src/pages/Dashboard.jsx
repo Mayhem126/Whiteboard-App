@@ -140,152 +140,173 @@ const Dashboard = () => {
   if (loading) return <p className="p-6">Loading...</p>
 
   return (
-    <div className="min-h-screen p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">My Canvases</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-black text-white px-4 py-2"
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="mx-auto max-w-4xl space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-semibold text-gray-900">
+            My Canvases
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            Logout
+          </button>
+        </div>
+  
+        {/* Create Canvas */}
+        <form
+          onSubmit={handleCreate}
+          className="flex gap-2 rounded-xl bg-white p-4 shadow-sm"
         >
-          Logout
-        </button>
+          <input
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+            placeholder="New canvas name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <button className="rounded-lg bg-black px-4 py-2 text-sm text-white hover:bg-gray-800">
+            Create
+          </button>
+        </form>
+  
+        {error && <p className="text-sm text-red-500">{error}</p>}
+  
+        {/* Canvas List */}
+        {canvases.length === 0 ? (
+          <p className="text-gray-500">No canvases yet. Create one above.</p>
+        ) : (
+          <ul className="space-y-3">
+            {canvases.map((canvas) => (
+              <li
+                key={canvas._id}
+                className="rounded-xl border bg-white p-4 shadow-sm transition hover:shadow-md"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div
+                    className="flex-1 cursor-pointer"
+                    onClick={() => navigate(`/canvas/${canvas._id}`)}
+                  >
+                    <p className="font-medium text-gray-900">{canvas.name}</p>
+                    <p className="text-sm text-gray-500">
+                      Created{" "}
+                      {new Date(canvas.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+  
+                  <button
+                    onClick={() => {
+                      setShareCanvasId(
+                        shareCanvasId === canvas._id ? null : canvas._id
+                      )
+                      setShareEmail("")
+                      setShareError(null)
+                      setShareSuccess(null)
+                      setDeleteError(null)
+                      setDeleteCanvasId(null)
+                    }}
+                    className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Share
+                  </button>
+  
+                  <button
+                    onClick={() => {
+                      setDeleteCanvasId(
+                        deleteCanvasId === canvas._id ? null : canvas._id
+                      )
+                      setDeleteError(null)
+                      setShareError(null)
+                      setShareSuccess(null)
+                      setShareEmail("")
+                      setShareCanvasId(null)
+                    }}
+                    className="rounded-lg border border-red-300 px-3 py-1 text-sm text-red-600 hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+  
+                {/* Share UI */}
+                {shareCanvasId === canvas._id && (
+                  <div className="mt-4 space-y-2">
+                    <input
+                      type="email"
+                      placeholder="User email"
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                      value={shareEmail}
+                      onChange={(e) => setShareEmail(e.target.value)}
+                    />
+  
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleShare(canvas._id)}
+                        className="rounded-lg bg-black px-3 py-1 text-sm text-white hover:bg-gray-800"
+                      >
+                        Share
+                      </button>
+  
+                      <button
+                        onClick={() => {
+                          setShareCanvasId(null)
+                          setShareEmail("")
+                          setShareError(null)
+                          setShareSuccess(null)
+                        }}
+                        className="rounded-lg border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+  
+                    {shareError && (
+                      <p className="text-sm text-red-500">{shareError}</p>
+                    )}
+                    {shareSuccess && (
+                      <p className="text-sm text-green-600">{shareSuccess}</p>
+                    )}
+                  </div>
+                )}
+  
+                {/* Delete UI */}
+                {deleteCanvasId === canvas._id && (
+                  <div className="mt-4 space-y-2">
+                    <p className="text-sm text-red-600">
+                      Are you sure you want to delete this canvas?
+                    </p>
+  
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDelete(canvas._id)}
+                        className="rounded-lg bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+  
+                      <button
+                        onClick={() => {
+                          setDeleteCanvasId(null)
+                          setDeleteError(null)
+                        }}
+                        className="rounded-lg border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+  
+                    {deleteError && (
+                      <p className="text-sm text-red-500">{deleteError}</p>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-
-      <form onSubmit={handleCreate} className="flex gap-2">
-        <input
-          className="border p-2 flex-1"
-          placeholder="New canvas name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button className="bg-black text-white px-4">Create</button>
-      </form>
-
-      {error && <p className="text-red-500">{error}</p>}
-
-      {canvases.length === 0 ? (
-        <p className="text-gray-500">No canvases yet. Create one above.</p>
-      ) : (
-        <ul className="space-y-2">
-          {canvases.map((canvas) => (
-            <li key={canvas._id} className="border p-4 hover:bg-gray-50">
-              <div className="flex justify-between items-center gap-4">
-                <div
-                  className="cursor-pointer flex-1"
-                  onClick={() => navigate(`/canvas/${canvas._id}`)}
-                >
-                  <p className="font-medium">{canvas.name}</p>
-                  <p className="text-sm text-gray-500">
-                    Created {new Date(canvas.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => {
-                    setShareCanvasId(
-                      shareCanvasId === canvas._id ? null : canvas._id
-                    )
-                    setShareEmail("")
-                    setShareError(null)
-                    setShareSuccess(null)
-                    setDeleteError(null)
-                    setDeleteCanvasId(null)
-                  }}
-                  className="text-sm border px-3 py-1"
-                >
-                  Share
-                </button>
-                <button
-                  onClick={() => {
-                    setDeleteCanvasId(
-                      deleteCanvasId === canvas._id ? null : canvas._id
-                    )
-                    setDeleteError(null)
-                    setShareError(null)
-                    setShareSuccess(null)
-                    setShareEmail("")
-                    setShareCanvasId(null)
-                  }}
-                  className="text-sm border px-3 py-1 text-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-              {shareCanvasId === canvas._id && (
-                <div className="mt-3 space-y-2">
-                  <input
-                    type="email"
-                    placeholder="User email"
-                    className="border p-2 w-full"
-                    value={shareEmail}
-                    onChange={(e) => setShareEmail(e.target.value)}
-                  />
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleShare(canvas._id)}
-                      className="bg-black text-white px-3 py-1"
-                    >
-                      Share
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setShareCanvasId(null)
-                        setShareEmail("")
-                        setShareError(null)
-                        setShareSuccess(null)
-                      }}
-                      className="border px-3 py-1"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-
-                  {shareError && (
-                    <p className="text-red-500 text-sm">{shareError}</p>
-                  )}
-                  {shareSuccess && (
-                    <p className="text-green-600 text-sm">{shareSuccess}</p>
-                  )}
-                </div>
-              )}
-              {deleteCanvasId === canvas._id && (
-                <div className="mt-3 space-y-2">
-                  <p className="text-sm text-red-600">
-                    Are you sure you want to delete this canvas?
-                  </p>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleDelete(canvas._id)}
-                      className="bg-red-600 text-white px-3 py-1"
-                    >
-                      Delete
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setDeleteCanvasId(null)
-                        setDeleteError(null)
-                      }}
-                      className="border px-3 py-1"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-
-                  {deleteError && (
-                    <p className="text-red-500 text-sm">{deleteError}</p>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
-  )
+  )  
 }
 
 export default Dashboard

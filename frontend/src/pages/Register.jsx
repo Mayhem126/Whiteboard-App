@@ -21,28 +21,52 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-96 space-y-4">
-        <h1 className="text-2xl font-bold">Register</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Create an account
+        </h2>
+        <p className="mt-1 text-sm text-gray-600">
+          Sign up to save and collaborate.
+        </p>
 
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
 
-        <input
-          className="w-full border p-2"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          className="w-full border p-2"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          />
 
-        <button className="w-full bg-black text-white p-2">Register</button>
-      </form>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          />
+
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+          >
+            Sign up
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already registered?{" "}
+          <span
+            onClick={() => navigate("/login")}
+            className="cursor-pointer text-black hover:underline"
+          >
+            Log in
+          </span>
+        </p>
+      </div>
     </div>
   )
 }
