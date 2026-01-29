@@ -9,7 +9,8 @@ export const rehydrateElements = (elements) => {
   return elements.map((el, index) => {
     switch (el.type) {
       case TOOL_ITEMS.BRUSH: {
-        const path = new Path2D(getSvgPathFromStroke(getStroke(el.points)))
+        const strokePoints = el.points.map((p) => [p.x, p.y])
+        const path = new Path2D(getSvgPathFromStroke(getStroke(strokePoints)))
         return { ...el, path }
       }
 

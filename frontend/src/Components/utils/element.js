@@ -123,8 +123,12 @@ export const isPointNearElement = (element, pointX, pointY) => {
         isPointCloseToLine(x1, y2, x1, y1, pointX, pointY)
       )
     case TOOL_ITEMS.BRUSH: {
-      const context = document.getElementById("canvas").getContext("2d")
-      return context.isPointInPath(element.path, pointX, pointY)
+      const threshold = 10
+      return element.points.some((p) => {
+        const dx = p.x - pointX
+        const dy = p.y - pointY
+        return Math.sqrt(dx * dx + dy * dy) <= threshold
+      })
     }
     case TOOL_ITEMS.TEXT: {
       const context = document.getElementById("canvas").getContext("2d")
