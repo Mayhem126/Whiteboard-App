@@ -1,5 +1,8 @@
 # Whiteboard App
 
+<img width="1920" height="959" alt="image" src="https://github.com/user-attachments/assets/a7e1076f-e4be-4cc8-8e20-e7fbdb212f85" />
+
+
 A browser-based collaborative whiteboard application for drawing, sketching, and visual note-taking on an interactive canvas, with support for real-time collaboration and persistent sessions.
 
 🔗 **Live Demo:** https://whiteboard-app-lovat.vercel.app/
