@@ -15,7 +15,12 @@ export const rehydrateElements = (elements) => {
       }
 
       case TOOL_ITEMS.TEXT:
-        return el
+        return {
+          ...el,
+          size: el.size || 24,
+          stroke: el.stroke || "#000000",
+          font: el.font || "Nanum Pen Script",
+        }
 
       default: {
         const hydrated = createElement(index, el.x1, el.y1, el.x2, el.y2, el)

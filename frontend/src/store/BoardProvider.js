@@ -96,12 +96,12 @@ const boardReducer = (state, action) => {
       }
     }
     case BOARD_ACTIONS.DRAW_UP: {
-      const elementsCopy = state.elements.map(el => ({ ...el }))
+      const elementsCopy = state.elements.map((el) => ({ ...el }))
       const newHistory = state.history.slice(0, state.index + 1)
       newHistory.push(elementsCopy)
-    
+
       syncCanvas(elementsCopy)
-    
+
       return {
         ...state,
         history: newHistory,
@@ -132,6 +132,8 @@ const boardReducer = (state, action) => {
       const newHistory = state.history.slice(0, state.index + 1)
       newHistory.push(newElements.map((el) => ({ ...el })))
 
+      syncCanvas(newElements)
+      
       return {
         ...state,
         toolActionType: TOOL_ACTION_TYPES.NONE,
@@ -143,10 +145,10 @@ const boardReducer = (state, action) => {
     case BOARD_ACTIONS.UNDO: {
       const prevIndex = state.index - 1
       if (prevIndex < 0) return state
-    
+
       const elements = state.history[prevIndex]
       syncCanvas(elements)
-    
+
       return {
         ...state,
         elements,
@@ -156,10 +158,10 @@ const boardReducer = (state, action) => {
     case BOARD_ACTIONS.REDO: {
       const nextIndex = state.index + 1
       if (nextIndex >= state.history.length) return state
-    
+
       const elements = state.history[nextIndex]
       syncCanvas(elements)
-    
+
       return {
         ...state,
         elements,

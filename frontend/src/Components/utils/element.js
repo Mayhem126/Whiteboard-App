@@ -86,6 +86,9 @@ export const createElement = (
       return element
     case TOOL_ITEMS.TEXT:
       element.text = ""
+      element.size = size || 24
+      element.stroke = stroke || "#000000"
+      element.font = "Nanum Pen Script"
       return element
     default:
       throw new Error("Type not recognised")
