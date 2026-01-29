@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api/canvas"
+const API_BASE = `${process.env.REACT_APP_API_URL}/api/canvas`
 
 export const updateCanvas = async (id, elements) => {
   try {
@@ -7,7 +7,7 @@ export const updateCanvas = async (id, elements) => {
       throw new Error(`Unauthorized`)
     }
 
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
+    const response = await fetch(`${API_BASE}/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
