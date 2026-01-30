@@ -1,5 +1,5 @@
 .container {
-  @apply absolute left-1/2 top-5 px-3 py-2 flex rounded border border-gray-400;
+  @apply absolute left-1/2 top-5 px-3 py-2 flex rounded border border-gray-400 bg-white;
   transform: translateX(-50%);
   box-shadow: 1px 0 10px rgba(0, 0, 0, 0.2);
 }

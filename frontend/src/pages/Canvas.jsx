@@ -1,6 +1,7 @@
 import Board from "../Components/Board"
 import Toolbar from "../Components/Toolbar"
 import Toolbox from "../Components/Toolbox"
+import Home from "../Components/Home"
 import BoardProvider from "../store/BoardProvider"
 import ToolboxProvider from "../store/ToolboxProvider"
 import { useEffect, useContext } from "react"
@@ -57,6 +58,7 @@ const CanvasContent = ({ id, navigate }) => {
   }, [id])
   return (
     <>
+      <Home />
       <Toolbar />
       <Board />
       <Toolbox />
